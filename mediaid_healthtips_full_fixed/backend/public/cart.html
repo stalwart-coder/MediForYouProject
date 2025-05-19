@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cart - MediForYou</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    body {
+      background-color: #f9fafb;
+    }
+
+    /* Toast styles */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #10b981;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      z-index: 1000;
+      pointer-events: none;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+      animation: fadeInOut 2.5s forwards;
+    }
+    @keyframes fadeInOut {
+      0% {opacity: 0; transform: translateY(20px);}
+      10%, 90% {opacity: 1; transform: translateY(0);}
+      100% {opacity: 0; transform: translateY(20px);}
+    }
+
+    /* Fade in for cart items */
+    .fade-in {
+      animation: fadeIn 0.5s ease forwards;
+      opacity: 0;
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <header class="bg-green-600 text-white p-4 flex justify-between items-center sticky top-0 z-50 shadow-md">
+    <h1 class="text-2xl font-bold">Your Cart</h1>
+    <a href="medicines.html" class="hover:underline flex items-center">
+      <i class="fas fa-arrow-left mr-2"></i> Back to Medicines
+    </a>
+  </header>
+
+  <main class="flex-grow max-w-4xl mx-auto p-6 bg-white rounded shadow mt-6 mb-10">
+    <section id="cartSection">
+      <h2 class="text-xl font-semibold mb-4">Medicines in your cart</h2>
+      <div id="cartItems" class="space-y-4" aria-live="polite" aria-relevant="additions removals">
+        <!-- Cart items will be rendered here -->
+      </div>
+      <p id="emptyCartMsg" class="text-center text-gray-500 my-8 hidden">Your cart is empty.</p>
+      <hr class="my-6" />
+      <div class="flex justify-between items-center mb-6">
+        <span class="text-lg font-semibold">Total:</span>
+        <span id="totalAmount" class="text-lg font-bold text-green-700">₹0.00</span>
+      </div>
+      <button
+        id="buyBtn"
+        disabled
+        class="w-full py-3 bg-green-600 text-white font-semibold rounded hover:bg-green-700 transition disabled:bg-gray-400"
+        aria-disabled="true"
+      >
+        Buy Now
+      </button>
+    </section>
+
+    <section id="paymentSection" class="hidden mt-10 bg-green-50 p-6 rounded shadow" aria-label="Payment Details">
+      <h2 class="text-xl font-semibold mb-4">Payment Details</h2>
+      <form id="paymentForm" class="space-y-4" novalidate>
+        <div>
+          <label for="address" class="block font-medium mb-1">Delivery Address</label>
+          <textarea
+            id="address"
+            name="address"
+            rows="3"
+            required
+            class="w-full p-2 border rounded resize-none focus:outline-none focus:ring-2 focus:ring-green-500"
+            aria-describedby="addressHelp"
+          ></textarea>
+          <p id="addressHelp" class="text-xs text-gray-600 mt-1">Enter your delivery address</p>
+        </div>
+
+        <div>
+          <label class="block font-medium mb-1">Payment Method</label>
+          <div class="space-y-2">
+            <label class="inline-flex items-center cursor-pointer">
+              <input type="radio" name="paymentMethod" value="Cash on Delivery" required class="mr-2" checked />
+              Cash on Delivery
+            </label>
+            <label class="inline-flex items-center cursor-pointer">
+              <input type="radio" name="paymentMethod" value="UPI" class="mr-2" />
+              UPI
+            </label>
+            <label class="inline-flex items-center cursor-pointer">
+              <input type="radio" name="paymentMethod" value="Credit/Debit Card" class="mr-2" />
+              Credit/Debit Card
+            </label>
+          </div>
+        </div>
+
+        <div id="upiSection" class="hidden">
+          <label for="upiId" class="block font-medium mb-1">Enter UPI ID</label>
+          <input
+            type="text"
+            id="upiId"
+            name="upiId"
+            placeholder="example@bank"
+            class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+            autocomplete="off"
+          />
+        </div>
+
+        <div id="cardSection" class="hidden space-y-4">
+          <div>
+            <label for="cardNumber" class="block font-medium mb-1">Card Number</label>
+            <input
+              type="text"
+              id="cardNumber"
+              name="cardNumber"
+              maxlength="16"
+              placeholder="1234 5678 9012 3456"
+              inputmode="numeric"
+              class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+            />
+          </div>
+          <div class="flex space-x-4">
+            <div class="flex-1">
+              <label for="expiry" class="block font-medium mb-1">Expiry Date (MM/YY)</label>
+              <input
+                type="text"
+                id="expiry"
+                name="expiry"
+                maxlength="5"
+                placeholder="MM/YY"
+                class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+            </div>
+            <div class="flex-1">
+              <label for="cvv" class="block font-medium mb-1">CVV</label>
+              <input
+                type="password"
+                id="cvv"
+                name="cvv"
+                maxlength="3"
+                placeholder="123"
+                inputmode="numeric"
+                class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full py-3 bg-green-600 text-white font-semibold rounded hover:bg-green-700 transition"
+        >
+          Pay Now
+        </button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="bg-gray-800 text-white py-4 text-center">
+    &copy; 2025 MediaAid. All rights reserved.
+  </footer>
+
+  <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true"></div>
+
+  <script>
+    (() => {
+      const cartItemsContainer = document.getElementById('cartItems');
+      const emptyCartMsg = document.getElementById('emptyCartMsg');
+      const totalAmountEl = document.getElementById('totalAmount');
+      const buyBtn = document.getElementById('buyBtn');
+      const paymentSection = document.getElementById('paymentSection');
+      const paymentForm = document.getElementById('paymentForm');
+      const toast = document.getElementById('toast');
+      const upiSection = document.getElementById('upiSection');
+      const cardSection = document.getElementById('cardSection');
+
+      // Consistent key 'cart' with property `quantity`
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+      function showToast(msg) {
+        toast.textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2600);
+      }
+
+      function renderCart() {
+        cartItemsContainer.innerHTML = '';
+
+        if (cart.length === 0) {
+          emptyCartMsg.classList.remove('hidden');
+          buyBtn.disabled = true;
+          buyBtn.setAttribute('aria-disabled', 'true');
+          totalAmountEl.textContent = '₹0.00';
+          paymentSection.classList.add('hidden');
+          return;
+        }
+
+        emptyCartMsg.classList.add('hidden');
+        buyBtn.disabled = false;
+        buyBtn.setAttribute('aria-disabled', 'false');
+
+        let total = 0;
+        cart.forEach((item, index) => {
+          const qty = item.quantity ?? 1; // fallback to 1 if somehow undefined
+          total += item.price * qty;
+
+          const itemDiv = document.createElement('div');
+          itemDiv.className = 'fade-in flex justify-between items-center p-3 border rounded shadow-sm';
+
+          // Medicine name & qty
+          const leftDiv = document.createElement('div');
+          leftDiv.innerHTML = `<p class="font-semibold text-green-800">${item.name}</p><p class="text-sm text-gray-600">Qty: ${qty}</p>`;
+
+          // Price & remove button
+          const rightDiv = document.createElement('div');
+          rightDiv.className = 'flex items-center space-x-4';
+
+          const priceSpan = document.createElement('span');
+          priceSpan.textContent = `₹${(item.price * qty).toFixed(2)}`;
+          priceSpan.className = 'font-semibold text-green-700';
+
+          const removeBtn = document.createElement('button');
+          removeBtn.setAttribute('aria-label', `Remove ${item.name} from cart`);
+          removeBtn.className = 'text-red-600 hover:text-red-800 focus:outline-none';
+          removeBtn.innerHTML = '<i class="fas fa-trash"></i>';
+          removeBtn.addEventListener('click', () => {
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+            showToast(`${item.name} removed from cart.`);
+          });
+
+          rightDiv.append(priceSpan, removeBtn);
+          itemDiv.append(leftDiv, rightDiv);
+          cartItemsContainer.appendChild(itemDiv);
+        });
+
+        totalAmountEl.textContent = `₹${total.toFixed(2)}`;
+      }
+
+      buyBtn.addEventListener('click', () => {
+        paymentSection.classList.remove('hidden');
+        paymentSection.scrollIntoView({ behavior: 'smooth' });
+      });
+
+      // Toggle payment input fields
+      paymentForm.paymentMethod.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+          const val = e.target.value;
+          upiSection.classList.toggle('hidden', val !== 'UPI');
+          cardSection.classList.toggle('hidden', val !== 'Credit/Debit Card');
+        });
+      });
+
+      paymentForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        // Basic validation
+        const address = paymentForm.address.value.trim();
+        if (!address) {
+          alert('Please enter delivery address.');
+          paymentForm.address.focus();
+          return;
+        }
+
+        const method = paymentForm.paymentMethod.value;
+
+        if (method === 'UPI') {
+          const upiId = paymentForm.upiId.value.trim();
+          if (!upiId) {
+            alert('Please enter your UPI ID.');
+            paymentForm.upiId.focus();
+            return;
+          }
+        } else if (method === 'Credit/Debit Card') {
+          const cardNum = paymentForm.cardNumber.value.trim();
+          const expiry = paymentForm.expiry.value.trim();
+          const cvv = paymentForm.cvv.value.trim();
+
+          if (!/^(\d{4}\s?){4}$/.test(cardNum + ' ')) {
+            alert('Please enter a valid 16-digit card number.');
+            paymentForm.cardNumber.focus();
+            return;
+          }
+
+          if (!/^\d{2}\/\d{2}$/.test(expiry)) {
+            alert('Please enter expiry in MM/YY format.');
+            paymentForm.expiry.focus();
+            return;
+          }
+
+          if (!/^\d{3}$/.test(cvv)) {
+            alert('Please enter a valid 3-digit CVV.');
+            paymentForm.cvv.focus();
+            return;
+          }
+        }
+
+        // If all good:
+        alert('Payment successful! Thank you for your purchase.');
+
+        // Clear cart and form
+        cart = [];
+        localStorage.removeItem('cart');
+        renderCart();
+        paymentForm.reset();
+        paymentSection.classList.add('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      renderCart();
+    })();
+  </script>
+</body>
+</html>

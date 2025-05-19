@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MediForYou - Home</title>
+  <link href="https://cdn.tailwindcss.com" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .typewriter-text {
+      display: inline-block;
+      overflow: hidden;
+      border-right: 2px solid white;
+      white-space: nowrap;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      50% { border-color: transparent; }
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-800 dark:bg-gray-900 dark:text-gray-100">
+
+  <!-- Header -->
+  <header class="shadow sticky top-0 bg-white dark:bg-gray-800 z-50">
+    <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-16">
+      <a href="index.html" class="flex items-center space-x-2">
+        <img src="assets/logo.png" alt="MediForYou Logo" class="logo-img select-none bg-transparent w-32 h-auto mt-3">
+        <span class="sr-only">MediForYou</span>
+      </a>
+      <nav class="space-x-4 hidden md:flex">
+        <a href="index.html" class="hover:text-green-600">Home</a>
+        <a href="medicines.html" class="hover:text-green-600">Medicines</a>
+        <a href="donate.html" class="hover:text-green-600">Donate</a>
+        <a href="healthtips.html" class="hover:text-green-600">Health Tips</a>
+        <a href="contact.html" class="hover:text-green-600">Contact</a>
+      </nav>
+      <div class="flex items-center space-x-4">
+        <div class="relative">
+          <a href="cart.html" class="text-2xl text-gray-700 dark:text-gray-100 hover:text-green-600">
+            <i class="fas fa-shopping-bag"></i>
+          </a>
+        </div>
+        <a href="signin.html" class="px-3 py-1 rounded bg-green-600 text-white hover:bg-green-700">Sign In</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Banner -->
+  <section class="relative h-96 bg-gray-800 flex items-center justify-center rounded-lg overflow-hidden mt-2">
+    <img src="assets/doctor1.jpg" alt="Healthcare Banner" class="absolute inset-0 w-full h-full object-fit object-top opacity-25" />
+    <div class="relative z-10 text-center px-4">
+      <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">
+        <span id="animated-text" class="typewriter-text"></span>
+      </h2>
+      <p class="text-xl text-white mb-6">Access quality healthcare services anytime, anywhere</p>
+      <a href="appointment.html" class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+        Book an Appointment
+      </a>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section class="max-w-6xl mx-auto px-4 py-12">
+    <h2 class="text-3xl font-semibold text-center mb-12">Our Services</h2>
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+        <div class="text-green-600 text-4xl mb-4"><i class="fas fa-pills"></i></div>
+        <h3 class="text-xl font-semibold mb-2">Medicine Delivery</h3>
+        <p>Get your prescribed medicines delivered to your doorstep within hours.</p>
+      </div>
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+        <div class="text-green-600 text-4xl mb-4"><i class="fas fa-user-md"></i></div>
+        <h3 class="text-xl font-semibold mb-2">Doctor Consultation</h3>
+        <p>Book appointments with top specialists in your area or consult online.</p>
+      </div>
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+        <div class="text-green-600 text-4xl mb-4"><i class="fas fa-ambulance"></i></div>
+        <h3 class="text-xl font-semibold mb-2">Emergency Services</h3>
+        <p>24/7 emergency ambulance services with real-time tracking.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team Section -->
+  <section id="team" class="bg-gray-100 py-12">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center text-blue-900 mb-4">Meet the Innovators Behind MediForYou</h2>
+      <p class="text-center text-gray-600 mb-10">
+        We’re a passionate team of healthcare innovators, technologists, and designers working to make medical assistance smarter, faster, and more accessible for everyone.
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+        <div class="bg-white rounded-xl shadow-md p-4 text-center hover:scale-105 transition duration-300">
+          <img src="assets/bipin.jpg" class="w-24 h-24 mx-auto rounded-full mb-3" alt="Bipin Pal">
+          <h3 class="text-lg font-semibold text-gray-800">Bipin Pal</h3>
+          <p class="text-sm text-blue-600">Backend Developer</p>
+        </div>
+        <div class="bg-white rounded-xl shadow-md p-4 text-center hover:scale-105 transition duration-300">
+          <img src="assets/faizan.jpg" class="w-24 h-24 mx-auto rounded-full mb-3" alt="Faizan Azmi">
+          <h3 class="text-lg font-semibold text-gray-800">Faizan Azmi</h3>
+          <p class="text-sm text-blue-600">Backend Developer</p>
+        </div>
+        <div class="bg-white rounded-xl shadow-md p-4 text-center hover:scale-105 transition duration-300">
+          <img src="assets/satyam.jpg" class="w-24 h-24 mx-auto rounded-full mb-3" alt="Satyam">
+          <h3 class="text-lg font-semibold text-gray-800">Satyam</h3>
+          <p class="text-sm text-blue-600">Backend Developer</p>
+        </div>
+        <div class="bg-white rounded-xl shadow-md p-4 text-center hover:scale-105 transition duration-300">
+          <img src="assets/yash.jpg" class="w-24 h-24 mx-auto rounded-full mb-3" alt="Yash Khare">
+          <h3 class="text-lg font-semibold text-gray-800">Yash Khare</h3>
+          <p class="text-sm text-blue-600">Frontend Developer</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-8">
+    <div class="max-w-6xl mx-auto px-4 grid md:grid-cols-5 gap-8">
+      <div>
+        <h3 class="text-xl font-semibold mb-4">MediForYou</h3>
+        <p>Providing accessible healthcare solutions for everyone.</p>
+      </div>
+      <div>
+        <h4 class="font-semibold mb-4">Quick Links</h4>
+        <ul class="space-y-2">
+          <li><a href="index.html" class="hover:text-green-400">Home</a></li>
+          <li><a href="medicines.html" class="hover:text-green-400">Medicines</a></li>
+          <li><a href="appointment.html" class="hover:text-green-400">Appointments</a></li>
+          <li><a href="healthtips.html" class="hover:text-green-400">Health Tips</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold mb-4">Support</h4>
+        <ul class="space-y-2">
+          <li><a href="contact.html" class="hover:text-green-400">Contact Us</a></li>
+          <li><a href="#" class="hover:text-green-400">FAQs</a></li>
+          <li><a href="#" class="hover:text-green-400">Privacy Policy</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold mb-4">Connect With Us</h4>
+        <div class="flex space-x-4">
+          <a href="#" class="text-2xl hover:text-green-400"><i class="fab fa-facebook"></i></a>
+          <a href="#" class="text-2xl hover:text-green-400"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="text-2xl hover:text-green-400"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+      <div>
+        <h4 class="font-semibold mb-4">Team</h4>
+        <ul class="space-y-2">
+          <li><a href="profilemodel.html" class="hover:text-green-400">Meet Our Team</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Emergency Button -->
+  <a href="emergency.html" class="fixed bottom-6 right-6 bg-red-600 text-white p-4 rounded-full shadow-lg hover:bg-red-700 transition-colors animate-pulse">
+    <i class="fas fa-ambulance text-2xl"></i>
+  </a>
+
+  <!-- Typewriter Script -->
+  <script>
+    const messages = [
+      "Your Health Matters",
+      "Trusted Care, Anytime",
+      "Book Appointments Instantly",
+      "Emergency Help at Hand"
+    ];
+    const textEl = document.getElementById("animated-text");
+    let index = 0, charIndex = 0, deleting = false;
+
+    function typeEffect() {
+      const current = messages[index];
+      if (!deleting) {
+        textEl.textContent = current.slice(0, ++charIndex);
+        if (charIndex === current.length) {
+          deleting = true;
+          setTimeout(typeEffect, 2000);
+          return;
+        }
+      } else {
+        textEl.textContent = current.slice(0, --charIndex);
+        if (charIndex === 0) {
+          deleting = false;
+          index = (index + 1) % messages.length;
+        }
+      }
+      setTimeout(typeEffect, deleting ? 50 : 100);
+    }
+    typeEffect();
+  </script>
+
+  <!-- FontAwesome -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <script src="theme.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

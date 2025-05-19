@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MediaAid - Emergency</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css">
+  <style>
+    #mapContainer { height: 300px; }
+    .sound-button { position: fixed; top: 20px; right: 20px; z-index: 1000; cursor: pointer; }
+    #ambulanceImage { width: 100%; max-width: 360px; animation: moveAmbulance 4s ease-in-out forwards; }
+    @keyframes moveAmbulance {
+      from { transform: translateX(-100%); }
+      to { transform: translateX(0); }
+    }
+  </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900">
+  <div class="min-h-screen">
+    <!-- Header -->
+    <header class="bg-red-600 text-white shadow">
+      <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-16">
+        <a href="index.html" class="flex items-center">
+          <img src="assets/logo.png" alt="MediForYou Logo" class="h-12 w-auto mr-3"/>
+          <h1 class="text-xl font-bold">Emergency Services</h1>
+        </a>
+        <button id="themeToggle" class="border rounded-full p-2 bg-white/20" aria-label="Toggle theme">
+          <i class="fas fa-moon"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Sound Announcement Button + Language Indicator -->
+    <div class="sound-button flex items-center gap-2 bg-white/80 px-3 py-1 rounded shadow-md">
+      <img src="assets/sound-image.png" id="announceToggle" alt="Announcement Button" width="30" height="30" class="cursor-pointer bg-red-600" />
+      <span id="langIndicator" class="text-sm font-medium text-gray-800">Language: Hindi</span>
+    </div>
+
+    <!-- Emergency Content -->
+    <main class="max-w-6xl mx-auto px-4 py-8">
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+        <div class="md:flex">
+          <!-- Map Section -->
+          <div class="md:w-2/3 p-4">
+            <h2 class="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Ambulance Tracking</h2>
+            <div id="mapContainer"></div>
+            <div class="mt-4 grid grid-cols-3 gap-4">
+              <div class="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg">
+                <p class="text-sm text-gray-500 dark:text-gray-400">Ambulance</p>
+                <p class="font-semibold" id="ambulanceId">MED-AMB-247</p>
+              </div>
+              <div class="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg">
+                <p class="text-sm text-gray-500 dark:text-gray-400">ETA</p>
+                <p class="font-semibold" id="eta">8 minutes</p>
+              </div>
+              <div class="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg">
+                <p class="text-sm text-gray-500 dark:text-gray-400">Distance</p>
+                <p class="font-semibold" id="distance">2.4 km</p>
+              </div>
+            </div>
+            <div class="mt-4">
+              <img src="assets/ambulance-image.png" alt="Ambulance Animation" id="ambulanceImage" class="rounded-lg shadow-md hidden"/>
+            </div>
+          </div>
+
+          <!-- Emergency Details -->
+          <div class="md:w-1/3 bg-gray-50 dark:bg-gray-700 p-6">
+            <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Emergency Details</h3>
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Emergency Type</label>
+                <select id="emergencyType" class="w-full p-2 rounded bg-gray-100 dark:bg-gray-600">
+                  <option>Accident</option>
+                  <option>Heart Attack</option>
+                  <option>Fire Injury</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Your Location</label>
+                <div class="bg-gray-100 dark:bg-gray-600 p-3 rounded-lg">
+                  <p class="font-medium" id="userLocation">Fetching...</p>
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Contact Number</label>
+                <input type="text" class="w-full p-2 rounded bg-gray-100 dark:bg-gray-600" placeholder="+91-xxxx-xxxxxx">
+              </div>
+              <div class="pt-4">
+                <button id="confirmEmergency" class="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors">
+                  Confirm Emergency
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Emergency Contacts -->
+      <div class="mt-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden p-6">
+        <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Emergency Contacts</h3>
+        <div class="grid md:grid-cols-3 gap-4">
+          <div class="bg-red-50 dark:bg-gray-700 p-4 rounded-lg cursor-pointer" onclick="alert('Dialing Ambulance 108 / 102...')">
+            <div class="flex items-center">
+              <div class="bg-red-100 dark:bg-gray-600 p-3 rounded-full mr-3">
+                <i class="fas fa-ambulance text-red-600 dark:text-red-400"></i>
+              </div>
+              <div>
+                <p class="font-semibold">Ambulance</p>
+                <p class="text-sm text-gray-600 dark:text-gray-300">108 / 102</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg cursor-pointer" onclick="alert('Dialing Fire 101...')">
+            <div class="flex items-center">
+              <div class="bg-blue-100 dark:bg-gray-600 p-3 rounded-full mr-3">
+                <i class="fas fa-fire-extinguisher text-blue-600 dark:text-blue-400"></i>
+              </div>
+              <div>
+                <p class="font-semibold">Fire</p>
+                <p class="text-sm text-gray-600 dark:text-gray-300">101</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-yellow-50 dark:bg-gray-700 p-4 rounded-lg cursor-pointer" onclick="alert('Dialing Police 100...')">
+            <div class="flex items-center">
+              <div class="bg-yellow-100 dark:bg-gray-600 p-3 rounded-full mr-3">
+                <i class="fas fa-shield-alt text-yellow-600 dark:text-yellow-400"></i>
+              </div>
+              <div>
+                <p class="font-semibold">Police</p>
+                <p class="text-sm text-gray-600 dark:text-gray-300">100</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+  <script>
+    navigator.geolocation.getCurrentPosition(position => {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+      const map = L.map('mapContainer').setView([lat, lng], 15);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+      L.marker([lat, lng]).addTo(map).bindPopup('You are here').openPopup();
+      fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`)
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('userLocation').textContent = data.display_name || 'Location fetched';
+        });
+    });
+
+    const languages = [
+      {
+        code: 'hi-IN', label: 'Hindi',
+        message: (eta, location) => `एम्बुलेंस ${eta} में ${location} पर पहुँच रही है`
+      },
+      {
+        code: 'en-US', label: 'English',
+        message: (eta, location) => `Ambulance is arriving in ${eta} at ${location}`
+      },
+      {
+        code: 'ta-IN', label: 'Tamil',
+        message: (eta, location) => `அம்புலன்ஸ் ${eta} இல் ${location} என்ற இடத்திற்கு வருகிறது`
+      },
+      {
+        code: 'ur-IN', label: 'Urdu',
+        message: (eta, location) => `ایمبولینس ${eta} میں ${location} پر پہنچ رہی ہے`
+      }
+    ];
+
+    let currentLangIndex = 0;
+    const announceToggle = document.getElementById('announceToggle');
+    const langIndicator = document.getElementById('langIndicator');
+
+    announceToggle.addEventListener('click', () => {
+      const eta = document.getElementById('eta').textContent;
+      const location = document.getElementById('userLocation').textContent;
+
+      const langObj = languages[currentLangIndex];
+      const utterance = new SpeechSynthesisUtterance(langObj.message(eta, location));
+      utterance.lang = langObj.code;
+      const voices = speechSynthesis.getVoices();
+      const selectedVoice = voices.find(v => v.lang === langObj.code);
+      if (selectedVoice) utterance.voice = selectedVoice;
+      if (speechSynthesis.speaking) speechSynthesis.cancel();
+
+      try {
+        speechSynthesis.speak(utterance);
+      } catch (err) {
+        console.error('Speech synthesis error:', err);
+        alert('Speech announcement could not be played.');
+      }
+
+      currentLangIndex = (currentLangIndex + 1) % languages.length;
+      langIndicator.textContent = `Language: ${languages[currentLangIndex].label}`;
+    });
+
+    document.getElementById('confirmEmergency').addEventListener('click', () => {
+      document.getElementById('ambulanceImage').classList.remove('hidden');
+      alert('Emergency confirmed! Ambulance is on the way.');
+    });
+
+    window.speechSynthesis.onvoiceschanged = () => {};
+  </script>
+  <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+</body>
+</html>

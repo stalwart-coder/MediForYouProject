@@ -1,0 +1,171 @@
+/* ─────────────────────────────────────────────
+   styles.css  •  global look & feel + utilities
+   (💡 Tailwind CDN already gives you utility
+    classes – this file only handles extras)
+   ───────────────────────────────────────────── */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+:root {
+  --primary: #10b981;
+  --primary-dark: #059669;
+  --dark: #1f2937;
+  --light: #f3f4f6;
+}
+
+/* ======   RESET / BASE   ====== */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: var(--light);
+  color: var(--dark);
+  transition: background 0.3s, color 0.3s;
+}
+
+body.dark {
+  background: #111827;
+  color: var(--light);
+}
+
+/* ======   HEADER   ====== */
+header {
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+body.dark header {
+  background: #1f2937;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* 1️⃣ logo Sizing (works in all break-points) */
+.logo-img {
+  height: 48px;      /* tweak 32–56 px to taste  */
+  width: auto;       /* keep aspect-ratio         */
+  object-fit: contain;
+  border-radius: 0.25rem;
+}
+
+/* Optional: make the light checkerboard vanish when the header is dark */
+body.dark .logo-img {
+  /* invert + slight brightness gives a subtle neon feel on dark header   */
+  filter: brightness(1.1) saturate(1.2);
+}
+
+/* Navigation hover */
+.nav-link {
+  position: relative;
+  transition: color 0.2s;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background: var(--primary);
+  transition: width 0.3s;
+}
+
+.nav-link:hover {
+  color: var(--primary);
+}
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* ======   BUTTONS   ====== */
+.btn,
+.btn-primary {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  transition: background 0.25s, transform 0.25s;
+}
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+.btn-primary:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+/* ======   CARDS   ====== */
+.card {
+  background: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+}
+body.dark .card {
+  background: #1f2937;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* ======   FORM INPUTS   ====== */
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  transition: border 0.2s, background 0.2s;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+body.dark input,
+body.dark textarea,
+body.dark select {
+  background: #374151;
+  border-color: #4b5563;
+  color: #f9fafb;
+}
+
+/* ======   ANIMATIONS   ====== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.fade-in-up {
+  animation: fadeInUp 0.5s ease-out both;
+}
+
+/* ─ Scroll-ready – start hidden, then JS adds .fade-in-up ─ */
+.scroll-animate {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* Responsive helper */
+@media (max-width: 768px) {
+  .logo-img {
+    height: 40px;
+  }
+}

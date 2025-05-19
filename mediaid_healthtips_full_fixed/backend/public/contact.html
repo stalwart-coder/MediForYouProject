@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MediaAid - Contact Us</title>
+  <link href="https://cdn.tailwindcss.com" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/styles.css"/>
+  <link rel="stylesheet" href="css/contact.css"/>
+</head>
+<body class="bg-white text-gray-800 dark:bg-gray-900 dark:text-gray-100">
+  <!-- Header -->
+  <header class="shadow sticky top-0 bg-white dark:bg-gray-800 z-50">
+    <!-- ... same header content ... -->
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-10">
+    <!-- Contact Header -->
+    <section class="text-center mb-12">
+      <h2 class="text-3xl font-bold mb-4">Contact Us</h2>
+      <p class="max-w-2xl mx-auto text-gray-600 dark:text-gray-400">
+        Have questions or feedback? We'd love to hear from you.
+      </p>
+    </section>
+
+    <section class="grid md:grid-cols-2 gap-8">
+      <!-- Contact Form -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
+        <h3 class="text-xl font-semibold mb-6">Send Us a Message</h3>
+
+        <form id="contactForm">
+          <div class="space-y-4">
+            <!-- 🧠 Added IDs to all inputs so JS can read the data -->
+            <div>
+              <label class="block mb-1">Name</label>
+              <input id="name" type="text" class="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600">
+            </div>
+
+            <div>
+              <label class="block mb-1">Email</label>
+              <input id="email" type="email" class="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600">
+            </div>
+
+            <!-- 🧠 Subject is not saved in database so we skip using it -->
+            <div>
+              <label class="block mb-1">Subject</label>
+              <select id="subject" class="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600">
+                <option>General Inquiry</option>
+                <option>Medicine Question</option>
+                <option>Technical Support</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block mb-1">Message</label>
+              <textarea id="message" rows="4" class="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600"></textarea>
+            </div>
+
+            <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg mt-4">
+              Send Message
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Contact Info -->
+      <div>
+        <!-- ... contact info content stays the same ... -->
+      </div>
+    </section>
+
+    <!-- Map -->
+    <section class="mt-12">
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
+        <!-- ... map iframe stays the same ... -->
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-gray-800 text-white py-8">
+    <!-- ... footer content stays the same ... -->
+  </footer>
+
+  <!-- 🧠 JavaScript to handle form submission -->
+  <script>
+    document.getElementById('contactForm').addEventListener('submit', async function (e) {
+      e.preventDefault(); // Stop form from refreshing the page
+
+      // 🧠 Collect form values
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const message = document.getElementById('message').value;
+
+      try {
+        // 🧠 Send POST request to your backend API
+        const response = await fetch('http://localhost:5000/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, message })
+        });
+
+        const result = await response.json();
+
+        // 🧠 Show success or error
+        if (response.ok) {
+          alert('Message sent successfully!');
+          // Optional: clear the form
+          document.getElementById('contactForm').reset();
+        } else {
+          alert('Error: ' + result.message);
+        }
+      } catch (error) {
+        console.error('Error submitting form:', error);
+        alert('Something went wrong while sending the message.');
+      }
+    });
+  </script>
+</body>
+</html>

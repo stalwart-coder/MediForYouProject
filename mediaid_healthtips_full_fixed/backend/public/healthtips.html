@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MediForYou - Health Tips</title>
+  <link href="https://cdn.tailwindcss.com" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+  <style>
+    .fade-in {
+      animation: fadeIn 1.2s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .card-hover:hover {
+      transform: translateY(-5px);
+      transition: transform 0.3s ease;
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-800 dark:bg-gray-900 dark:text-gray-100">
+  <!-- Header -->
+  <header
+    class="shadow sticky top-0 bg-white dark:bg-gray-800 z-50 py-4 px-6 text-center font-bold text-xl"
+  >
+    MediForYou- Health Tips
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-10">
+    <!-- Health Tips Header -->
+    <section class="text-center mb-12 fade-in">
+      <h2 class="text-3xl font-bold mb-4">Daily Health Tips</h2>
+      <p class="max-w-2xl mx-auto text-gray-600 dark:text-gray-400">
+        Expert advice to help you maintain a healthy lifestyle and prevent diseases
+      </p>
+    </section>
+
+    <!-- Symptom Selector -->
+    <section class="mb-12 fade-in">
+      <div class="text-center mb-4">
+        <label
+          for="symptomSelect"
+          class="block text-lg font-medium mb-2"
+          >Choose Your Symptom:</label
+        >
+        <select
+          id="symptomSelect"
+          class="w-full max-w-sm mx-auto px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+        >
+          <option value="fever">Fever</option>
+          <option value="cold">Cold</option>
+          <option value="headache">Headache</option>
+          <option value="fatigue">Fatigue</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Nutrition Plan -->
+    <section class="mb-16 fade-in" id="nutritionSection">
+      <h3
+        class="text-2xl font-semibold text-green-600 mb-6 text-center"
+      >
+        7-Day Nutrition Plan for Fever Recovery
+      </h3>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div
+          class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md"
+          id="nutritionPlan"
+        >
+          <ul class="space-y-4">
+            <li>
+              <strong>Sunday:</strong> Warm vegetable soup, bananas, coconut
+              water
+            </li>
+            <li>
+              <strong>Monday:</strong> Khichdi with curd, orange juice, herbal
+              tea
+            </li>
+            <li>
+              <strong>Tuesday:</strong> Steamed veggies, rice gruel, honey lemon
+              water
+            </li>
+            <li>
+              <strong>Wednesday:</strong> Plain rice, boiled eggs, pomegranate
+              juice
+            </li>
+            <li>
+              <strong>Thursday:</strong> Mashed potatoes, carrot soup, ginger
+              tea
+            </li>
+            <li>
+              <strong>Friday:</strong> Dalia (porridge), cucumber salad, apple
+              juice
+            </li>
+            <li>
+              <strong>Saturday:</strong> Idli with chutney, green tea, mixed
+              fruit bowl
+            </li>
+          </ul>
+        </div>
+        <img
+          src="https://images.unsplash.com/photo-1606787366850-de6330128bfc"
+          class="rounded-xl shadow-md w-full h-auto object-cover"
+          alt="Nutrition Image"
+        />
+      </div>
+    </section>
+
+    <!-- Yoga Tips -->
+    <section class="mb-16 fade-in">
+      <h3
+        class="text-2xl font-semibold text-purple-600 mb-6 text-center"
+      >
+        Recommended Yoga Asanas
+      </h3>
+      <div id="yogaCards" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </section>
+
+    <!-- Exercise Tips -->
+    <section class="mb-16 fade-in">
+      <h3
+        class="text-2xl font-semibold text-blue-600 mb-6 text-center"
+      >
+        Recommended Light Exercises
+      </h3>
+      <div id="exerciseCards" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </section>
+
+    <!-- Newsletter -->
+    <section
+      class="mt-16 bg-gray-100 dark:bg-gray-800 rounded-xl p-8 fade-in"
+    >
+      <div class="max-w-2xl mx-auto text-center">
+        <h3 class="text-2xl font-semibold mb-2">Get Weekly Health Tips</h3>
+        <p class="mb-6 text-gray-600 dark:text-gray-400">
+          Subscribe to our newsletter for the latest health advice and updates
+        </p>
+        <form class="flex max-w-md mx-auto">
+          <input
+            type="email"
+            placeholder="Your email"
+            class="flex-grow px-4 py-3 rounded-l-lg border focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600"
+          />
+          <button
+            type="submit"
+            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-r-lg"
+          >
+            Subscribe
+          </button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-8 text-center">
+    &copy; 2025 MediaAid. All rights reserved.
+  </footer>
+
+  <script>
+    document
+      .getElementById("symptomSelect")
+      .addEventListener("change", function () {
+        const symptom = this.value;
+        updateNutritionPlan(symptom);
+        updateYogaTips(symptom);
+        updateExerciseTips(symptom);
+      });
+
+    function updateNutritionPlan(symptom) {
+      const nutritionPlans = {
+        fever: [
+          "Warm vegetable soup, bananas, coconut water",
+          "Khichdi with curd, orange juice, herbal tea",
+          "Steamed veggies, rice gruel, honey lemon water",
+          "Plain rice, boiled eggs, pomegranate juice",
+          "Mashed potatoes, carrot soup, ginger tea",
+          "Dalia (porridge), cucumber salad, apple juice",
+          "Idli with chutney, green tea, mixed fruit bowl",
+        ],
+        cold: [
+          "Chicken soup, garlic, ginger tea",
+          "Turmeric milk, oranges, boiled veggies",
+          "Lemon honey water, toast, kiwi",
+          "Hot oatmeal, herbal tea, guava",
+          "Cinnamon water, khichdi, spinach",
+          "Dalia with almonds, papaya, warm milk",
+          "Rice soup, honey-lemon, steamed broccoli",
+        ],
+        headache: [
+          "Almonds, watermelon juice, leafy greens",
+          "Oats, banana, green tea",
+          "Lentils, sweet potatoes, ginger juice",
+          "Whole grains, boiled eggs, herbal water",
+          "Nuts and seeds, oranges, spinach",
+          "Quinoa, apple, chamomile tea",
+          "Yogurt, berries, cucumber",
+        ],
+        fatigue: [
+          "Banana, oatmeal, green tea",
+          "Boiled eggs, avocado toast, orange juice",
+          "Brown rice, mixed veggies, herbal tea",
+          "Quinoa salad, nuts, lemon water",
+          "Dalia, peanut butter toast, spinach juice",
+          "Sweet potatoes, dates, coconut water",
+          "Lentils, whole wheat roti, ginger tea",
+        ],
+      };
+
+      const days = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ];
+      const list = nutritionPlans[symptom];
+      const nutritionPlan = document.getElementById("nutritionPlan");
+      nutritionPlan.innerHTML =
+        `<ul class="space-y-4">` +
+        list
+          .map((item, i) => `<li><strong>${days[i]}:</strong> ${item}</li>`)
+          .join("") +
+        `</ul>`;
+
+      document.querySelector(
+        "#nutritionSection h3"
+      ).textContent = `7-Day Nutrition Plan for ${
+        symptom.charAt(0).toUpperCase() + symptom.slice(1)
+      } Recovery`;
+    }
+    function updateYogaTips(symptom) {
+  const yogaTips = {
+    fever: [
+      {
+        name: "Balasana (Child's Pose)",
+        img: "assets/yoga1.jpg",
+        desc: "Relieves fatigue and gently stretches the back and hips.",
+      },
+      {
+        name: "Viparita Karani (Legs Up the Wall)",
+        img: "assets/yoga2.jpg",
+        desc: "Calms the nervous system and reduces swelling.",
+      },
+    ],
+    cold: [
+      {
+        name: "Bhujangasana (Cobra Pose)",
+        img: "assets/yoga3.jpg",
+        desc: "Opens the chest and improves lung capacity.",
+      },
+      {
+        name: "Setu Bandhasana (Bridge Pose)",
+        img: "assets/yoga4.jpg",
+        desc: "Strengthens the back and alleviates congestion.",
+      },
+    ],
+    headache: [
+      {
+        name: "Savasana (Corpse Pose)",
+        img: "assets/yoga5.jpg",
+        desc: "Promotes deep relaxation and stress relief.",
+      },
+      {
+        name: "Adho Mukha Svanasana (Downward Dog)",
+        img: "assets/yoga6.jpg",
+        desc: "Improves blood circulation and reduces tension.",
+      },
+    ],
+    fatigue: [
+      {
+        name: "Tadasana (Mountain Pose)",
+        img: "assets/yoga7.jpg",
+        desc: "Improves posture and boosts energy levels.",
+      },
+      {
+        name: "Vrikshasana (Tree Pose)",
+        img: "assets/yoga8.jpg",
+        desc: "Enhances balance and mental focus.",
+      },
+    ],
+  };
+
+  const container = document.getElementById("yogaCards");
+  container.innerHTML = yogaTips[symptom]
+    .map(
+      (asana) => `
+      <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md text-center card-hover">
+        <img src="${asana.img}" alt="${asana.name}" class="rounded mb-3 w-full h-48 object-cover" />
+        <h4 class="font-semibold mb-1">${asana.name}</h4>
+        <p class="text-sm text-gray-600 dark:text-gray-400">${asana.desc}</p>
+      </div>
+    `
+    )
+    .join("");
+}
+
+function updateExerciseTips(symptom) {
+  const exerciseTips = {
+    fever: [
+      {
+        name: "Neck Rolls",
+        img: "assets/excer1.jpg",
+        desc: "Gently loosens neck muscles and relieves stiffness.",
+      },
+      {
+        name: "Stretching",
+        img: "assets/excer2.jpg",
+        desc: "Improves blood flow and eases muscle tension.",
+      },
+    ],
+    cold: [
+      {
+        name: "Brisk Walking",
+        img: "assets/excer3.jpg",
+        desc: "Boosts immunity and improves lung function.",
+      },
+      {
+        name: "Arm Circles",
+        img: "assets/excer4.jpg",
+        desc: "Increases shoulder flexibility and circulation.",
+      },
+    ],
+    headache: [
+      {
+        name: "Deep Breathing",
+        img: "assets/excer5.jpg",
+        desc: "Reduces tension and promotes relaxation.",
+      },
+      {
+        name: "Neck Stretch",
+        img: "assets/excer6.jpg",
+        desc: "Relieves neck tension that can cause headaches.",
+      },
+    ],
+    fatigue: [
+      {
+        name: "Light Jogging",
+        img: "assets/excer7.jpg",
+        desc: "Increases energy and improves mood.",
+      },
+      {
+        name: "Jumping Jacks",
+        img: "assets/excer8.jpg",
+        desc: "Boosts circulation and stamina.",
+      },
+    ],
+  };
+
+  const container = document.getElementById("exerciseCards");
+  container.innerHTML = exerciseTips[symptom]
+    .map(
+      (ex) => `
+      <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md text-center card-hover">
+        <img src="${ex.img}" alt="${ex.name}" class="rounded mb-3 w-full h-48 object-cover" />
+        <h4 class="font-semibold mb-1">${ex.name}</h4>
+        <p class="text-sm text-gray-600 dark:text-gray-400">${ex.desc}</p>
+      </div>
+    `
+    )
+    .join("");
+}
+
+    // Load default symptom data on page load
+    window.addEventListener("DOMContentLoaded", () => {
+      const defaultSymptom = document.getElementById("symptomSelect").value;
+      updateNutritionPlan(defaultSymptom);
+      updateYogaTips(defaultSymptom);
+      updateExerciseTips(defaultSymptom);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MediForYou – Medicines</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    .medicine-card {
+      background: white;
+      border-radius: 10px;
+      padding: 1rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.5s ease;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(15px);
+    }
+
+    .medicine-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .medicine-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .category-card {
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+
+    .category-card:hover {
+      transform: scale(1.05);
+    }
+
+    .dark .medicine-card {
+      background: #1f2937;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .dark .category-card {
+      background: #1e3a8a;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-10px); }
+      40%, 80% { transform: translateX(10px); }
+    }
+
+    #noResults {
+      animation: shake 0.6s ease-in-out;
+    }
+
+    mark {
+      background-color: #34d399;
+      color: white;
+      padding: 0 0.15em;
+      border-radius: 0.15rem;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #10b981;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+
+<body class="bg-white text-gray-800 dark:bg-gray-900 dark:text-gray-100 relative">
+  <header class="shadow sticky top-0 bg-white dark:bg-gray-800 z-50 p-4 flex justify-between items-center">
+    <h1 class="text-3xl font-bold text-green-600">MediForYou – Medicines</h1>
+    <a href="cart.html" class="relative inline-flex items-center px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
+      <i class="fas fa-shopping-cart mr-2"></i> Cart
+      <span id="cartCount" class="ml-2 bg-white text-green-600 text-xs font-semibold px-2 py-0.5 rounded-full">0</span>
+    </a>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-10">
+    <!-- Search -->
+    <section class="mb-8">
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
+        <h2 class="text-2xl font-semibold mb-6">Find Medicines</h2>
+        <div class="relative">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Search medicines by name or type..."
+            class="w-full px-4 py-3 border rounded-lg pl-12 focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600"
+            autocomplete="off"
+          />
+          <i class="fas fa-search absolute left-4 top-4 text-gray-400"></i>
+        </div>
+      </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="mb-12">
+      <h3 class="text-xl font-semibold mb-4">Categories</h3>
+      <div id="categoryContainer" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4"></div>
+    </section>
+
+    <!-- Medicines -->
+    <section>
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-xl font-semibold">Medicines</h3>
+        <button id="loadMoreBtn" class="text-green-600 hover:text-green-500 text-sm font-semibold">
+          Load More
+        </button>
+      </div>
+
+      <div id="medicineGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+      <div id="noResults" class="hidden text-center text-red-600 mt-8 text-lg font-semibold" role="alert">
+        Sorry for the inconvenience, no medicines found!
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-gray-800 text-white py-8 text-center">
+    &copy; 2025 MediaAid. All rights reserved.
+  </footer>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <script>
+    (() => {
+      // ------------------------- CONSTANTS & STATE -------------------------- //
+      const MEDICINES = [
+        { name: "Paracetamol 500 mg", type: "Pain Reliever", price: 5.99, category: "Pain Relief" },
+        { name: "Ibuprofen 200 mg", type: "NSAID", price: 6.49, category: "Pain Relief" },
+        { name: "Cetirizine 10 mg", type: "Antihistamine", price: 4.99, category: "Allergy" },
+        { name: "Omeprazole 20 mg", type: "PPI", price: 8.99, category: "Digestive" },
+        { name: "Metformin 500 mg", type: "Diabetes", price: 7.45, category: "Chronic" },
+        { name: "Amoxicillin 500 mg", type: "Antibiotic", price: 9.3, category: "Antibiotics" },
+        { name: "Loratadine 10 mg", type: "Antihistamine", price: 5.1, category: "Allergy" },
+        { name: "Simvastatin 20 mg", type: "Cardiac", price: 12.5, category: "Cardiac" },
+        { name: "Aspirin 75 mg", type: "Pain Reliever", price: 4.5, category: "Pain Relief" },
+        { name: "Azithromycin 500 mg", type: "Antibiotic", price: 14.2, category: "Antibiotics" }
+      ];
+
+      const BATCH_SIZE = 6;
+      let currentBatch = 1;
+      let filteredMedicines = [...MEDICINES];
+      let activeCategory = null;
+
+      // -------------------------- DOM REFERENCES --------------------------- //
+      const medicineGrid = document.getElementById('medicineGrid');
+      const loadMoreBtn = document.getElementById('loadMoreBtn');
+      const searchInput = document.getElementById('searchInput');
+      const noResults = document.getElementById('noResults');
+      const categoryContainer = document.getElementById('categoryContainer');
+      const cartCount = document.getElementById('cartCount');
+      const toast = document.getElementById('toast');
+
+      const categories = [...new Set(MEDICINES.map(m => m.category))].sort();
+
+      // ------------------------------- UI ---------------------------------- //
+
+      function renderCategories() {
+        categories.forEach(cat => {
+          const card = document.createElement('div');
+          card.className = "category-card bg-blue-100 dark:bg-blue-900/30 p-4 rounded-lg text-center select-none";
+          card.tabIndex = 0;
+          card.setAttribute('role', 'button');
+          card.setAttribute('aria-pressed', 'false');
+          card.innerHTML = `<i class="fas fa-pills text-3xl text-blue-600 dark:text-blue-400 mb-2"></i><p>${cat}</p>`;
+
+          const toggle = () => toggleCategory(card, cat);
+          card.addEventListener('click', toggle);
+          card.addEventListener('keydown', e => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              toggle();
+            }
+          });
+
+          categoryContainer.appendChild(card);
+        });
+      }
+
+      function toggleCategory(card, cat) {
+        // If user clicks the same category again, we clear the filter.
+        activeCategory = activeCategory === cat ? null : cat;
+
+        // Update visual state
+        categoryContainer.querySelectorAll('[role="button"]').forEach(btn => {
+          btn.classList.remove('bg-green-100', 'dark:bg-green-900/40', 'text-green-700', 'dark:text-green-400');
+          btn.classList.add('bg-blue-100', 'dark:bg-blue-900/30', 'text-blue-600', 'dark:text-blue-400');
+          btn.setAttribute('aria-pressed', 'false');
+        });
+
+        if (activeCategory) {
+          card.classList.add('bg-green-100', 'dark:bg-green-900/40', 'text-green-700', 'dark:text-green-400');
+          card.classList.remove('bg-blue-100', 'dark:bg-blue-900/30', 'text-blue-600', 'dark:text-blue-400');
+          card.setAttribute('aria-pressed', 'true');
+        }
+
+        currentBatch = 1;
+        filterAndRender();
+      }
+
+      function highlight(text, query) {
+        if (!query) return text;
+        const regex = new RegExp(`(${query.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, 'gi');
+        return text.replace(regex, '<mark>$1</mark>');
+      }
+
+      function renderMedicines(medicines) {
+        medicineGrid.innerHTML = "";
+
+        if (medicines.length === 0) {
+          noResults.classList.remove("hidden");
+          loadMoreBtn.classList.add("hidden");
+          return;
+        } else {
+          noResults.classList.add("hidden");
+        }
+
+        const end = currentBatch * BATCH_SIZE;
+        const toShow = medicines.slice(0, end);
+
+        toShow.forEach((m, i) => {
+          const card = document.createElement("div");
+          card.className = "medicine-card";
+          card.innerHTML = `
+            <div class="flex items-start">
+              <div class="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mr-4">
+                <i class="fas fa-pills text-2xl text-green-600"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold leading-tight">${highlight(m.name, searchInput.value.trim())}</h4>
+                <p class="text-sm text-gray-600 dark:text-gray-400">${highlight(m.type, searchInput.value.trim())}</p>
+                <div class="mt-2 flex items-center">
+                  <span class="text-green-600 font-medium">₹${m.price.toFixed(2)}</span>
+                  <button class="ml-auto px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700 transition add-to-cart-btn" data-name="${m.name}" data-price="${m.price}">
+                    Add
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+          medicineGrid.appendChild(card);
+          setTimeout(() => card.classList.add('visible'), i * 100);
+        });
+
+        // Hide/show Load More button
+        loadMoreBtn.classList.toggle("hidden", end >= medicines.length);
+      }
+
+      // ------------------------------ FILTERING ----------------------------- //
+
+      function filterAndRender() {
+        const query = searchInput.value.trim().toLowerCase();
+
+        filteredMedicines = MEDICINES.filter(m => {
+          const matchesSearch = m.name.toLowerCase().includes(query) || m.type.toLowerCase().includes(query);
+          const matchesCategory = !activeCategory || m.category === activeCategory;
+          return matchesSearch && matchesCategory;
+        });
+
+        renderMedicines(filteredMedicines);
+      }
+
+      // ---------------------------- CART / TOAST ---------------------------- //
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2500);
+      }
+
+      function updateCartCount() {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const total = cart.reduce((sum, item) => sum + item.quantity, 0);
+        cartCount.textContent = total;
+      }
+
+      document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('add-to-cart-btn')) {
+          const name = e.target.getAttribute('data-name');
+          const price = parseFloat(e.target.getAttribute('data-price'));
+
+          let cart = JSON.parse(localStorage.getItem('cart')) || [];
+          const existing = cart.find(item => item.name === name);
+          if (existing) {
+            existing.quantity += 1;
+          } else {
+            cart.push({ name, price, quantity: 1 });
+          }
+
+          localStorage.setItem('cart', JSON.stringify(cart));
+          updateCartCount();
+          showToast(`${name} added to cart`);
+        }
+      });
+
+      // ---------------------------- EVENT BINDINGS -------------------------- //
+
+      searchInput.addEventListener('input', () => {
+        currentBatch = 1;
+        filterAndRender();
+      });
+
+      loadMoreBtn.addEventListener('click', () => {
+        currentBatch++;
+        renderMedicines(filteredMedicines);
+      });
+
+      // ------------------------------ INIT ---------------------------------- //
+      renderCategories();
+      filterAndRender();
+      updateCartCount();
+    })();
+  </script>
+</body>
+</html>

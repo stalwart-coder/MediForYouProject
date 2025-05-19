@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MediaAid – Book Appointment</title>
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+    <!-- Icons & Lottie -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+    <style>
+      /* subtle hover */
+      .doctor-card {
+        transition: transform 0.25s, box-shadow 0.25s;
+      }
+      .doctor-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+      }
+      /* slide‑in animation */
+      @keyframes slideIn {
+        0% {
+          opacity: 0;
+          transform: translateX(40px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      .animate-slide {
+        animation: slideIn 0.45s ease-out both;
+      }
+    </style>
+  </head>
+
+  <body
+    class="h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 overflow-hidden"
+  >
+    <!-- ===== Shell layout (Sidebar + Main) ===== -->
+    <div class="flex h-full">
+      <!-- ═══ Sidebar ═══ -->
+      <aside
+        class="w-64 bg-white dark:bg-gray-800 border-r dark:border-gray-700 overflow-y-auto p-6 space-y-8 hidden sm:block"
+      >
+        <div class="text-2xl font-bold text-green-600 mb-4">Services</div>
+
+        <!-- Doctor Specialties -->
+        <nav class="space-y-2">
+          <h3
+            class="text-sm uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-1"
+          >
+            Specialists
+          </h3>
+          <button
+            class="nav-link w-full flex items-center gap-2 py-2 px-3 rounded hover:bg-green-50 dark:hover:bg-gray-700"
+            data-section="all"
+          >
+            <i class="fas fa-stethoscope"></i>All Doctors
+          </button>
+          <button
+            class="nav-link"
+            data-section="Cardiologist"
+          >
+            <i class="fas fa-heart-pulse"></i>Cardiologist
+          </button>
+          <button
+            class="nav-link"
+            data-section="Psychiatrist"
+          >
+            <i class="fas fa-brain"></i>Psychiatrist
+          </button>
+          <button
+            class="nav-link"
+            data-section="Dermatologist"
+          >
+            <i class="fas fa-user-md"></i>Dermatologist
+          </button>
+          <button
+            class="nav-link"
+            data-section="Physician"
+          >
+            <i class="fas fa-user-nurse"></i>Physician
+          </button>
+        </nav>
+
+        <!-- Other Services -->
+        <nav class="space-y-2 pt-6 border-t dark:border-gray-700">
+          <h3
+            class="text-sm uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-1"
+          >
+            Other Services
+          </h3>
+          <a
+            href="medicines.html"
+            class="flex items-center gap-2 py-2 px-3 rounded hover:bg-green-50 dark:hover:bg-gray-700"
+          >
+            <i class="fas fa-pills"></i>Medicine Delivery
+          </a>
+          <a
+            href="labtests.html"
+            class="flex items-center gap-2 py-2 px-3 rounded hover:bg-green-50 dark:hover:bg-gray-700"
+          >
+            <i class="fas fa-vials"></i>Lab Testing
+          </a>
+          <a
+            href="ambulance.html"
+            class="flex items-center gap-2 py-2 px-3 rounded hover:bg-green-50 dark:hover:bg-gray-700"
+          >
+            <i class="fas fa-ambulance"></i>Emergency Ambulance
+          </a>
+        </nav>
+      </aside>
+
+      <!-- ═══ Main Content ═══ -->
+      <main class="flex-1 overflow-y-auto p-6 relative">
+        <!-- Hero / animation banner -->
+        <div class="text-center mb-10">
+          <lottie-player
+            src="https://assets1.lottiefiles.com/packages/lf20_hy4txm7l.json"
+            background="transparent"
+            speed="1"
+            style="width: 220px; height: 220px; margin-inline:auto"
+            loop
+            autoplay
+          ></lottie-player>
+          <h1 class="text-3xl font-semibold">Select Your Specialist</h1>
+          <p class="text-gray-600 dark:text-gray-300 mt-2">
+            Filter by category from the left panel and book instantly.
+          </p>
+        </div>
+
+        <!-- Doctors Grid -->
+        <section id="doctorGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></section>
+      </main>
+    </div>
+
+    <!-- ===== Modal for detailed profile ===== -->
+    <div
+      id="profileModal"
+      class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50"
+    >
+      <div
+        class="bg-white dark:bg-gray-800 w-full max-w-lg p-6 rounded-xl relative animate-slide max-h-[90vh] overflow-y-auto"
+      >
+        <button
+          id="closeModal"
+          class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+        <div id="modalContent"></div>
+      </div>
+    </div>
+
+    <!-- ===== Doctor & UI Logic ===== -->
+    <script>
+      const DOCTORS = [
+        {
+          name: "Dr. Anil Sharma",
+          spec: "Cardiologist",
+          exp: 10,
+          fees: 500,
+          img: "https://randomuser.me/api/portraits/men/32.jpg",
+        },
+        {
+          name: "Dr. Neha Verma",
+          spec: "Psychiatrist",
+          exp: 8,
+          fees: 600,
+          img: "https://randomuser.me/api/portraits/women/45.jpg",
+        },
+        {
+          name: "Dr. Kavita Singh",
+          spec: "Dermatologist",
+          exp: 12,
+          fees: 700,
+          img: "https://randomuser.me/api/portraits/women/65.jpg",
+        },
+        {
+          name: "Dr. Rahul Gupta",
+          spec: "Physician",
+          exp: 6,
+          fees: 400,
+          img: "https://randomuser.me/api/portraits/men/75.jpg",
+        },
+        {
+          name: "Dr. Mohan Menon",
+          spec: "Cardiologist",
+          exp: 15,
+          fees: 900,
+          img: "https://randomuser.me/api/portraits/men/21.jpg",
+        },
+        {
+          name: "Dr. Aisha Khan",
+          spec: "Psychiatrist",
+          exp: 5,
+          fees: 550,
+          img: "https://randomuser.me/api/portraits/women/12.jpg",
+        },
+      ];
+
+      const grid = document.getElementById("doctorGrid");
+      const modal = document.getElementById("profileModal");
+      const modalContent = document.getElementById("modalContent");
+      const closeBtn = document.getElementById("closeModal");
+
+      // Render doctors filtered by specialty
+      function render(spec = "all") {
+        grid.innerHTML = "";
+        DOCTORS.filter((d) => spec === "all" || d.spec === spec).forEach((d) => {
+          const card = document.createElement("div");
+          card.className =
+            "doctor-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md animate-slide";
+          card.innerHTML = `
+            <img src="${d.img}" alt="${d.name}" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover">
+            <h3 class="text-lg font-bold text-center">${d.name}</h3>
+            <p class="text-center text-sm text-gray-600 dark:text-gray-300 mb-2">${d.spec}</p>
+            <p class="text-center text-sm mb-4">Experience: ${d.exp}+ Years<br>Fees: ₹${d.fees}</p>
+            <div class="flex justify-center gap-2">
+              <button class="bg-green-600 text-white px-4 py-1.5 rounded hover:bg-green-700 text-sm">Book</button>
+              <button data-name="${d.name}" class="profile-btn text-green-600 border border-green-600 px-4 py-1.5 rounded hover:bg-green-50 dark:hover:bg-gray-700 text-sm">View Profile</button>
+            </div>`;
+          grid.appendChild(card);
+        });
+      }
+
+      // Initial render (all doctors)
+      render();
+
+      // Sidebar nav click
+      document.querySelectorAll(".nav-link").forEach((btn) =>
+        btn.addEventListener("click", () => {
+          const spec = btn.dataset.section;
+          render(spec);
+        })
+      );
+
+      // Delegate profile modal open
+      document.addEventListener("click", (e) => {
+        if (e.target.closest(".profile-btn")) {
+          const name = e.target.closest(".profile-btn").dataset.name;
+          const doc = DOCTORS.find((d) => d.name === name);
+          if (!doc) return;
+
+          modalContent.innerHTML = `
+            <div class='text-center'>
+              <img src="${doc.img}" alt="${doc.name}" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover">
+              <h2 class='text-2xl font-semibold mb-1'>${doc.name}</h2>
+              <p class='text-green-600 mb-4'>${doc.spec}</p>
+              <p>Experience: <strong>${doc.exp} years</strong></p>
+              <p>Consultation Fees: <strong>₹${doc.fees}</strong></p>
+              <p class='mt-4 text-sm text-gray-600 dark:text-gray-300'>Detailed bio goes here. Replace this paragraph with doctor's qualifications, clinic timings, and contact info.</p>
+
+              <!-- Appointment Booking Form -->
+              <form id="appointmentForm" class="mt-6 text-left max-w-md mx-auto space-y-4">
+                <div>
+                  <label for="patientName" class="block text-sm font-medium mb-1">Your Name</label>
+                  <input type="text" id="patientName" name="patientName" required class="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600" />
+                </div>
+                <div>
+                  <label for="patientEmail" class="block text-sm font-medium mb-1">Email Address</label>
+                  <input type="email" id="patientEmail" name="patientEmail" required class="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600" />
+                </div>
+                <div>
+                  <label for="appointmentDate" class="block text-sm font-medium mb-1">Appointment Date</label>
+                  <input type="date" id="appointmentDate" name="appointmentDate" required class="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600" />
+                </div>
+                <button type="submit" class="w-full mt-4 bg-green-600 hover:bg-green-700 text-white py-2 rounded-md font-semibold">Book Appointment</button>
+              </form>
+            </div>
+          `;
+          modal.classList.remove("hidden");
+
+          // Add submit handler for appointment form
+          const appointmentForm = document.getElementById("appointmentForm");
+          appointmentForm.addEventListener("submit", (evt) => {
+            evt.preventDefault();
+
+            // Collect form data
+            const patientName = appointmentForm.patientName.value.trim();
+            const patientEmail = appointmentForm.patientEmail.value.trim();
+            const appointmentDate = appointmentForm.appointmentDate.value;
+
+            if (!patientName || !patientEmail || !appointmentDate) {
+              alert("Please fill all fields.");
+              return;
+            }
+
+            // For demo: just alert success, in real app send to backend here
+            alert(
+              `Appointment booked with ${doc.name} on ${appointmentDate} for ${patientName}. Confirmation sent to ${patientEmail}.`
+            );
+
+            // Close modal and reset form
+            modal.classList.add("hidden");
+            appointmentForm.reset();
+          });
+        }
+      });
+
+      closeBtn.addEventListener("click", () => modal.classList.add("hidden"));
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) modal.classList.add("hidden");
+      });
+    </script>
+  </body>
+</html>

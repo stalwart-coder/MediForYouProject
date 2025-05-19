@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MediaAid – Lab Testing</title>
+
+  <!-- Tailwind CSS & Icons -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+  <style>
+    .test-card {
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .test-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+    }
+    @keyframes slideIn {
+      0%   { opacity:0; transform:translateY(30px); }
+      100% { opacity:1; transform:translateY(0); }
+    }
+    .animate-slide { animation: slideIn 0.45s ease-out both; }
+  </style>
+</head>
+
+<body class="h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 overflow-hidden">
+  <div class="flex h-full">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white dark:bg-gray-800 border-r dark:border-gray-700 overflow-y-auto p-6 space-y-8 hidden sm:block">
+      <div class="text-2xl font-bold text-green-600 mb-4">Services</div>
+      <nav class="space-y-2">
+        <h3 class="text-sm uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-1">Specialists</h3>
+        <a href="bookappointment.html" class="flex items-center gap-2 py-2 px-3 rounded hover:bg-green-50 dark:hover:bg-gray-700"><i class="fas fa-stethoscope"></i>Book Appointment</a>
+      </nav>
+      <nav class="space-y-2 pt-6 border-t dark:border-gray-700">
+        <h3 class="text-sm uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-1">Other Services</h3>
+        <a href="medicines.html" class="flex items-center gap-2 py-2 px-3 rounded hover:bg-green-50 dark:hover:bg-gray-700"><i class="fas fa-pills"></i>Medicine Delivery</a>
+        <a href="labtests.html" class="flex items-center gap-2 py-2 px-3 rounded bg-green-100 dark:bg-gray-700"><i class="fas fa-vials"></i>Lab Testing</a>
+        <a href="ambulance.html" class="flex items-center gap-2 py-2 px-3 rounded hover:bg-green-50 dark:hover:bg-gray-700"><i class="fas fa-ambulance"></i>Emergency Ambulance</a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto p-6 relative">
+      <div class="text-center mb-10">
+        <lottie-player src="https://assets10.lottiefiles.com/packages/lf20_EzPrWM.json" background="transparent" speed="1" style="width: 220px; height: 220px; margin-inline:auto" loop autoplay></lottie-player>
+        <h1 class="text-3xl font-semibold">Book Lab Tests</h1>
+        <p class="text-gray-600 dark:text-gray-300 mt-2">Choose from our trusted test packages with home sample pickup.</p>
+      </div>
+
+      <!-- Test Cards -->
+      <section class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="test-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md animate-slide">
+          <h3 class="text-lg font-bold mb-2">Complete Blood Count (CBC)</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-300">Includes hemoglobin, WBC, RBC, and platelet counts.</p>
+          <p class="mt-2 font-semibold text-green-600">₹300</p>
+          <button class="bg-green-600 text-white px-4 py-1.5 mt-4 rounded hover:bg-green-700 text-sm" onclick="openModal('CBC Test', 300)">Book Now</button>
+        </div>
+
+        <div class="test-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md animate-slide">
+          <h3 class="text-lg font-bold mb-2">Liver Function Test (LFT)</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-300">Assesses liver health through various enzyme levels.</p>
+          <p class="mt-2 font-semibold text-green-600">₹750</p>
+          <button class="bg-green-600 text-white px-4 py-1.5 mt-4 rounded hover:bg-green-700 text-sm" onclick="openModal('LFT Test', 750)">Book Now</button>
+        </div>
+
+        <div class="test-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md animate-slide">
+          <h3 class="text-lg font-bold mb-2">Thyroid Profile</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-300">Tests for T3, T4, and TSH hormone levels.</p>
+          <p class="mt-2 font-semibold text-green-600">₹500</p>
+          <button class="bg-green-600 text-white px-4 py-1.5 mt-4 rounded hover:bg-green-700 text-sm" onclick="openModal('Thyroid Profile', 500)">Book Now</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50">
+    <div class="bg-white dark:bg-gray-800 w-full max-w-md p-8 rounded-xl relative animate-slide">
+      <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"><i class="fas fa-times"></i></button>
+      <div id="modalContent" class="text-center">
+        <!-- Dynamic content -->
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    const modal = document.getElementById('modal');
+    const modalContent = document.getElementById('modalContent');
+
+    function openModal(testName, price) {
+      modalContent.innerHTML = `
+        <i class="fas fa-vials text-5xl text-green-600 mb-4"></i>
+        <h2 class="text-2xl font-bold mb-2">${testName}</h2>
+        <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">This test will be conducted with home sample collection. You will be contacted shortly after confirmation.</p>
+        <p class="font-semibold text-green-600 mb-4">Price: ₹${price}</p>
+        <button class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded">Confirm Booking</button>
+      `;
+      modal.classList.remove('hidden');
+    }
+
+    function closeModal() {
+      modal.classList.add('hidden');
+    }
+
+    modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+  </script>
+</body>
+</html>
